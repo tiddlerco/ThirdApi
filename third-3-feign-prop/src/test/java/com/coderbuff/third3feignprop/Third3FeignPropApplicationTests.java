@@ -16,7 +16,8 @@ public class Third3FeignPropApplicationTests {
 
     @Test
     public void test() {
-        stockService.getStockByCode("sh600519");
+        StockDTO sh600519 = stockService.getStockByCode("sh600519");
+        System.out.println(sh600519);
     }
 
 }
