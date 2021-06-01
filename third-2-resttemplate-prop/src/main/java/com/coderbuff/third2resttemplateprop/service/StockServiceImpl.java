@@ -30,6 +30,7 @@ public class StockServiceImpl {
     /**
      * API URL
      */
+    //请求示例：http://web.juhe.cn:8080/finance/stock/hs?gid=sh601009&key=您申请的APPKEY
     private static final String URL = "http://web.juhe.cn:8080/finance/stock/hs?gid=%s&key=%s";
 
     /**
