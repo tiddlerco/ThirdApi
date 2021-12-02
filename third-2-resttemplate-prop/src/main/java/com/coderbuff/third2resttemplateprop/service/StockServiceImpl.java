@@ -51,6 +51,7 @@ public class StockServiceImpl {
 
     /**
      * 支持所有的contentType类型
+     *
      * @return 类型转换
      */
     private List<HttpMessageConverter<?>> parseContentType() {
