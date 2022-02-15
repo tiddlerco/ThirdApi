@@ -1,6 +1,6 @@
 package com.coderbuff.third2resttemplateprop.study.mockTest;
 
-import com.alibaba.testable.core.annotation.MockMethod;
+import com.alibaba.testable.core.annotation.MockInvoke;
 import com.coderbuff.third2resttemplateprop.Third2RestTemplatePropApplication;
 import com.coderbuff.third2resttemplateprop.study.mockTest.entity.StorageMachineInfoDTO;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class DemoMockTest {
 
     public static class Mock {
 
-        @MockMethod(targetClass = DemoMock.class)
+        @MockInvoke(targetClass = DemoMock.class)
         private List<StorageMachineInfoDTO> mockMachineDate() {
             List<StorageMachineInfoDTO> list = new ArrayList<>();
             for (int i = 0; i < 100; i++) {

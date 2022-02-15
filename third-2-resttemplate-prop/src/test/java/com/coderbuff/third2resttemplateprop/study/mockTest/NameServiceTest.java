@@ -1,6 +1,6 @@
 package com.coderbuff.third2resttemplateprop.study.mockTest;
 
-import com.alibaba.testable.core.annotation.MockMethod;
+import com.alibaba.testable.core.annotation.MockInvoke;
 import com.coderbuff.third2resttemplateprop.Third2RestTemplatePropApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
-import static com.alibaba.testable.core.matcher.InvokeVerifier.verify;
+import static com.alibaba.testable.core.matcher.InvocationVerifier.verifyInvoked;
 
 /**
  * @Author 喻可
@@ -24,7 +24,7 @@ public class NameServiceTest {
 
     public static class Mock {
 
-        @MockMethod(targetClass = NameService.class)
+        @MockInvoke(targetClass = NameService.class)
         private String bulidName(String name) {
 
             return name + "mock";
@@ -43,7 +43,7 @@ public class NameServiceTest {
     @Test
     public void should_set_mock_context() throws Exception {
         String name = nameService.getName("喻可");
-        verify(name).equals("喻可mock");
+        verifyInvoked(name).equals("喻可mock");
         System.out.println(name);
     }
 
