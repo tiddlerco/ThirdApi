@@ -20,7 +20,7 @@ public class MyBeanFactory implements BeanFactoryAware {
         this.beanFactory = beanFactory;
     }
     public void getMyBeanName() {
-        MyBeanName myBeanName = beanFactory.getBean(MyBeanName.class);
-        System.out.println(beanFactory.isSingleton("myCustomBeanName"));
+        MyBeanName myBeanName = (MyBeanName)beanFactory.getBean("myCustomBeanName-ware");
+        System.out.println(beanFactory.isSingleton("myCustomBeanName-ware"));
     }
 }
