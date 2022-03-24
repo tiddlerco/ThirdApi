@@ -1,15 +1,21 @@
 package com.coderbuff.third2resttemplateprop.service;
 
 import com.coderbuff.third2resttemplateprop.config.JuheConfig;
+import com.coderbuff.third2resttemplateprop.entity.Person;
+import com.coderbuff.third2resttemplateprop.entity.School;
 import com.coderbuff.third2resttemplateprop.entity.JuheStockResponse;
-import com.coderbuff.third2resttemplateprop.entity.JuheStockResultDapanData;
+import com.coderbuff.third2resttemplateprop.mapper.PersonMapper;
+import com.coderbuff.third2resttemplateprop.mapper.SchoolMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +32,16 @@ public class StockServiceImpl {
      */
     @Autowired
     private JuheConfig juheConfig;
+
+
+    @Resource
+    private PersonMapper personMapper;
+
+    @Resource
+    private SchoolMapper schoolMapper;
+
+    @Resource
+    private StockServiceImpl stockService;
 
     /**
      * API URL
@@ -62,4 +78,24 @@ public class StockServiceImpl {
         messageConverters.add(converter);
         return messageConverters;
     }
+
+    @Transactional
+    public int testAddPerson() {
+        Person person = new Person();
+        person.setName("yk11");
+        int insert = personMapper.insert(person);
+        stockService.testAddSchool();
+        int i = 1 / 0;
+        return insert;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public int testAddSchool() {
+        School school = new School();
+        school.setName("商城11");
+        int insert = schoolMapper.insert(school);
+        return insert;
+    }
+
+
 }

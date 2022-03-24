@@ -24,4 +24,12 @@ public class Third2RestTemplatePropApplicationTests {
         JuheStockResponse response = stockService.getStockByCode("sh601009");
         System.out.println(response);
     }
+
+    @Test
+    public void testTranslation() {
+        int i = stockService.testAddPerson();
+        int i1 = stockService.testAddSchool();
+        assert i > 0;
+        assert i1 > 0;
+    }
 }
