@@ -36,6 +36,7 @@ public class MyStartupRunner implements CommandLineRunner {
         myBeanFactory.getMyBeanName();
         MyBeanName myBeanName = (MyBeanName) applicationContext.getBean("myCustomBeanName-ware");
         System.out.println(">>>>>>>>>>>>>>>服务启动执行，执行加载数据等操作<<<<<<<<<<<<<");
+        System.out.println(PropertiesUtil.getValue("person.sex"));
     }
 
 }

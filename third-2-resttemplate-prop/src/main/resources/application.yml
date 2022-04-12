@@ -17,3 +17,6 @@ juhe-stock:
   appKey: 71e065a2cdf2753a5d6261b5002498b7
 server:
   port: 8888
+
+person:
+  sex: man
