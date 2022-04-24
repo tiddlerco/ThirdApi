@@ -9,7 +9,7 @@ import com.google.common.hash.Hashing;
 import java.util.Set;
 
 /**
- * Description:
+ * Description:一致性hash
  * 需要jar:
  *         <dependency>
  *             <groupId>com.google.guava</groupId>
