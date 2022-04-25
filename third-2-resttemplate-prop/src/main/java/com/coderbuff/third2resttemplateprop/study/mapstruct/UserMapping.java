@@ -3,7 +3,6 @@ package com.coderbuff.third2resttemplateprop.study.mapstruct;
 import com.alibaba.fastjson.JSON;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserMapping extends BaseMapping<User, UserVo> {
 
+    //这里的注解会覆盖父类的
     @Mapping(target = "gender", source = "sex")
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")

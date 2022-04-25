@@ -25,12 +25,14 @@ public interface BaseMapping<SOURCE, TARGET> {
 
     /**
      * 反向，映射同名属性
+     * InheritInverseConfiguration注解 反转sourceToTarget方法的映射
      */
     @InheritInverseConfiguration(name = "sourceToTarget")
     SOURCE targetToSource(TARGET var1);
 
     /**
      * 映射同名属性，集合形式
+     * InheritConfiguration注解 使用已有的映射更新对象属性
      */
     @InheritConfiguration(name = "sourceToTarget")
     List<TARGET> sourceToTarget(List<SOURCE> var1);
