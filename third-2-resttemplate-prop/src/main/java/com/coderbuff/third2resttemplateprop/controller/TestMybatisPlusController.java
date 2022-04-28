@@ -47,8 +47,6 @@ public class TestMybatisPlusController {
         user.setVersion(0);
         userService.updateById(user);
 
-        userService.update();
-
     }
 
     /**
