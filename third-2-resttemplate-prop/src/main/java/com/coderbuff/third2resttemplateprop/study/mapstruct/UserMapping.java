@@ -1,6 +1,8 @@
 package com.coderbuff.third2resttemplateprop.study.mapstruct;
 
 import com.alibaba.fastjson.JSON;
+import org.mapstruct.InheritConfiguration;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -18,17 +20,38 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserMapping extends BaseMapping<User, UserVo> {
 
-    //这里的注解会覆盖父类的
+    //这里的注解会覆盖父类的,父类的注解不能继承
     @Mapping(target = "gender", source = "sex")
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Override
     UserVo sourceToTarget(User var1);
 
-    @Mapping(target = "sex", source = "gender")
-    @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
+
+    /**
+     * 反向，映射同名属性
+     * InheritInverseConfiguration注解 反转sourceToTarget方法的映射
+     * 如果父类配置InheritInverseConfiguration注解,子类不配置不会生效
+     */
+    @InheritInverseConfiguration(name = "sourceToTarget")
     @Override
     User targetToSource(UserVo var1);
+
+
+    /**
+     * 映射同名属性，集合形式
+     * InheritConfiguration注解 使用已有的映射更新对象属性
+     */
+    @InheritConfiguration(name = "sourceToTarget")
+    List<UserVo> sourceListToTargetList(List<User> var1);
+
+
+    /**
+     * 反向，映射同名属性，集合形式
+     */
+    @InheritConfiguration(name = "targetToSource")
+    List<User> targetListToSourceList(List<UserVo> var1);
+
 
     /**
      * 自定义属性类型转换方法

@@ -1,9 +1,6 @@
 package com.coderbuff.third2resttemplateprop.study.mapstruct;
 
-import org.mapstruct.InheritConfiguration;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.MapperConfig;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,28 +17,22 @@ public interface BaseMapping<SOURCE, TARGET> {
     /**
      * 映射同名属性
      */
-    @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     TARGET sourceToTarget(SOURCE var1);
 
     /**
      * 反向，映射同名属性
-     * InheritInverseConfiguration注解 反转sourceToTarget方法的映射
      */
-    @InheritInverseConfiguration(name = "sourceToTarget")
     SOURCE targetToSource(TARGET var1);
 
     /**
      * 映射同名属性，集合形式
-     * InheritConfiguration注解 使用已有的映射更新对象属性
      */
-    @InheritConfiguration(name = "sourceToTarget")
-    List<TARGET> sourceToTarget(List<SOURCE> var1);
+    List<TARGET> sourceListToTargetList(List<SOURCE> var1);
 
     /**
      * 反向，映射同名属性，集合形式
      */
-    @InheritConfiguration(name = "targetToSource")
-    List<SOURCE> targetToSource(List<TARGET> var1);
+    List<SOURCE> targetListToSourceList(List<TARGET> var1);
 
     /**
      * 映射同名属性，集合流形式
