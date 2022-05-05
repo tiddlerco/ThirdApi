@@ -19,8 +19,9 @@ public class MyBeanFactory implements BeanFactoryAware {
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
+
     public void getMyBeanName() {
-        MyBeanName myBeanName = (MyBeanName)beanFactory.getBean("myCustomBeanName-ware");
-        System.out.println(beanFactory.isSingleton("myCustomBeanName-ware"));
+        MyBeanName myBeanName = (MyBeanName) beanFactory.getBean("myCustomBeanName-ware");
+        System.out.println("MyBeanFactory类===BeanFactoryAware" + beanFactory.isSingleton("myCustomBeanName-ware"));
     }
 }

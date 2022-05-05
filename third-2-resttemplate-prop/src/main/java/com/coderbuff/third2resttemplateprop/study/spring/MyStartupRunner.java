@@ -32,10 +32,10 @@ public class MyStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println(myBeanName.getBeanName());
+        System.out.println("MyStartupRunner类===CommandLineRunner" + myBeanName.getBeanName());
         myBeanFactory.getMyBeanName();
         MyBeanName myBeanName = (MyBeanName) applicationContext.getBean("myCustomBeanName-ware");
-        System.out.println(">>>>>>>>>>>>>>>服务启动执行，执行加载数据等操作<<<<<<<<<<<<<");
+        System.out.println("MyStartupRunner类====CommandLineRunner");
         System.out.println(PropertiesUtil.getValue("person.sex"));
     }
 

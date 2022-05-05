@@ -18,9 +18,9 @@ public class MyBeanName implements BeanNameAware {
 
     @Override
     public void setBeanName(String beanName) {
-        System.out.println("=======");
-        System.out.println(beanName);
-        this.beanName=beanName;
+        System.out.println("MyBeanName类在此回调=======BeanNameAware");
+        System.out.println("回调bean名称===" + beanName);
+        this.beanName = beanName;
     }
 
     public String getBeanName() {

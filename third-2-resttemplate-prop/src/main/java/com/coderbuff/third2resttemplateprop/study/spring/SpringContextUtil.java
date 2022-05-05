@@ -30,6 +30,8 @@ public class SpringContextUtil implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         SpringContextUtil.applicationContext = applicationContext;
+
+        System.out.println("SpringContextUtil类========ApplicationContextAware在此回调==========");
     }
 
     /**
