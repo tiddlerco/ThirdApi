@@ -164,12 +164,19 @@ public class TestMybatisPlusController {
         OrderItem orderItem = new OrderItem();
         orderItem.setColumn("age");
         orderItem.setAsc(false);
+
+        OrderItem orderItem2 = new OrderItem();
+        orderItem2.setColumn("create_time");
+        orderItem2.setAsc(true);
+
         List<OrderItem> list = new ArrayList<>();
         list.add(orderItem);
-        selectPage.setOrders(list);
+        list.add(orderItem2);
+
+        selectPage.addOrder(list);
 
         //SELECT COUNT(*) AS total FROM `user` WHERE deleted = 0
-        //SELECT id, `name`, age, version, deleted, create_time, update_time FROM `user` WHERE deleted = 0 ORDER BY age DESC LIMIT ?
+        //SELECT id, `name`, age, version, deleted, create_time, update_time FROM `user` WHERE deleted = 0 ORDER BY age DESC, create_time ASC LIMIT ?
         UserPage userPage = userService.page(selectPage);
 
         System.out.println(userPage.getRecords().size());
