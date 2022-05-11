@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.coderbuff.third2resttemplateprop.common.page.UserPage;
 import com.coderbuff.third2resttemplateprop.entity.User;
 import com.coderbuff.third2resttemplateprop.service.UserService;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author 喻可
@@ -23,6 +25,10 @@ public class TestMybatisPlusController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private ThreadPoolTaskExecutor executor;
+
 
     /**
      * 添加
@@ -36,6 +42,27 @@ public class TestMybatisPlusController {
             userService.save(user);
         }
     }
+
+    /**
+     * 测试多线程下使用唯一索引添加数据
+     */
+    @GetMapping("/addWithUniqueIndex")
+    public void testAddWithUniqueIndex() {
+        for (int i = 0; i < 50; i++) {
+            executor.execute(() -> {
+                User user = new User();
+                user.setName("yyk");
+                user.setAge(27);
+                try {
+                    userService.save(user);
+                } catch (Exception e) {
+                    System.out.println("数据已经存在");
+                }
+
+            });
+        }
+    }
+
 
     /**
      * 更新带乐观锁
@@ -144,7 +171,7 @@ public class TestMybatisPlusController {
 
         //SELECT COUNT(*) AS total FROM `user` WHERE deleted = 0
         //SELECT id,`name`,age,version,deleted,create_time,update_time FROM `user` WHERE deleted=0 AND (`name` = ?) LIMIT ?
-        UserPage userPage = userService.page(selectPage,Wrappers.emptyWrapper());
+        UserPage userPage = userService.page(selectPage, Wrappers.emptyWrapper());
         //判断是否还有下一页
         userPage.setHasNext(userPage.hasNext());
 
