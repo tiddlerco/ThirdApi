@@ -1,6 +1,7 @@
 package com.coderbuff.third2resttemplateprop.study.postprocessor;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +24,14 @@ public class MyInstantiationAwareBeanPostProcessor implements InstantiationAware
     @Override
     public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
 
-        System.out.println("[MyInstantiationAwareBeanPostProcessor]后置处理器处理bean=【" + beanName + "】开始");
+        System.out.println("[MyInstantiationAwareBeanPostProcessor]后置处理器处理bean=【" + beanName + "】结束");
 
         return true;
+    }
+
+    @Override
+    public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) throws BeansException {
+        System.out.println("[MyInstantiationAwareBeanPostProcessor]后置处理器处理执行postProcessProperties方法");
+        return null;
     }
 }
