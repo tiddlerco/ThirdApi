@@ -69,10 +69,20 @@ public class TestMybatisPlusController {
      */
     @GetMapping("/updateById")
     public void testUpdateById() {
-        User user = userService.getById(701L);
-        user.setName("我是你爹");
-        user.setVersion(0);
-        userService.updateById(user);
+
+        for (int i = 0; i < 150; i++) {
+            executor.execute(() -> {
+                boolean isSuccess;
+                do {
+                    User user = userService.getById(801L);
+                    Integer age = user.getAge();
+                    user.setAge(age + 1);
+                    user.setVersion(user.getVersion());
+                    isSuccess = userService.updateById(user);
+                } while (!isSuccess);
+
+            });
+        }
 
     }
 
