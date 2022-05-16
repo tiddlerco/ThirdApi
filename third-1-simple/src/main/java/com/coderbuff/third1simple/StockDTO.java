@@ -19,5 +19,7 @@ public class StockDTO {
      */
     private String name;
 
+    private String price;
+
     //省略其它字段
 }
