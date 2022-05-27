@@ -1,5 +1,7 @@
 package com.coderbuff.third2resttemplateprop.study.mapstruct;
 
+import com.coderbuff.third2resttemplateprop.study.mydesign.UpdateItemOperation;
+import com.coderbuff.third2resttemplateprop.study.spring.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,13 @@ public class MapStructTest {
 
     @Resource
     private UserMapping userMapping;
+
+    @Test
+    public void test(){
+        UpdateItemOperation updateItemOperation = SpringContextUtil.getBean("updateItemOperation",UpdateItemOperation.class);
+
+        updateItemOperation.templateMethod();
+    }
 
     @Test
     public void testDomain2DTO() {
