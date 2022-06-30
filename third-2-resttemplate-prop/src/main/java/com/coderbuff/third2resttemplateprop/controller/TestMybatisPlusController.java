@@ -7,13 +7,14 @@ import com.coderbuff.third2resttemplateprop.common.page.UserPage;
 import com.coderbuff.third2resttemplateprop.entity.User;
 import com.coderbuff.third2resttemplateprop.service.UserService;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author 喻可
@@ -91,10 +92,26 @@ public class TestMybatisPlusController {
      * 更新所有年龄为2的人的名字为233
      */
     @GetMapping("/updateByWrapper")
+    @Transactional(rollbackFor = Exception.class)
     public void testUpdateByWrapper() {
-        boolean update = userService.update(Wrappers.<User>lambdaUpdate().set(User::getName, "233")
-                .eq(User::getAge, 1)
-        );
+
+        try {
+            User user = userService.getById(801L);
+            Integer age = user.getAge();
+            user.setAge(age + 1);
+            boolean b1 = userService.updateById(user);
+
+            User user2 = userService.getById(802L);
+            user2.setName("888");
+            boolean b = userService.updateById(user2);
+
+            if (b) {
+                throw new RuntimeException();
+            }
+        } catch (RuntimeException e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+
     }
 
     /**

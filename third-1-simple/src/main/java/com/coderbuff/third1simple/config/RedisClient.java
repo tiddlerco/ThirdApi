@@ -1,10 +1,14 @@
 package com.coderbuff.third1simple.config;
 
+import com.google.common.hash.Funnels;
+import com.google.common.hash.Hashing;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisGeoCommands;
+import org.springframework.data.redis.connection.RedisStringCommands;
 import org.springframework.data.redis.core.*;
 import org.springframework.util.CollectionUtils;
 
@@ -60,7 +64,7 @@ public class RedisClient {
     public static Boolean delIfAbsent(String keyFormat, String... keyValues) {
         String key = format(keyFormat, keyValues);
         byte[] keyByteArray = redisTemplate.getKeySerializer().serialize(key);
-        return (Boolean)redisTemplate.execute(new RedisCallback<Boolean>() {
+        return (Boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
 
             @Override
             public Boolean doInRedis(RedisConnection connection) {
@@ -72,7 +76,7 @@ public class RedisClient {
 
     public static void expire(String keyFormat, Integer seconds, String... keyValues) {
         String key = format(keyFormat, keyValues);
-        redisTemplate.expire(key, (long)seconds.intValue(), TimeUnit.SECONDS);
+        redisTemplate.expire(key, (long) seconds.intValue(), TimeUnit.SECONDS);
     }
 
     public static void expire(String keyFormat, Long seconds, String... keyValues) {
@@ -112,12 +116,12 @@ public class RedisClient {
     public static <T> T get(String keyFormat, String... keyValues) {
         String key = format(keyFormat, keyValues);
         Object o = valueOperations.get(key);
-        return o != null ? (T)o : null;
+        return o != null ? (T) o : null;
     }
 
     public static <T> T mGet(Collection keys) {
         Object o = valueOperations.multiGet(keys);
-        return o != null ? (T)o : null;
+        return o != null ? (T) o : null;
     }
 
     public static List<String> hmGet(String keyFormat, List<String> keys, String... keyValues) {
@@ -133,7 +137,7 @@ public class RedisClient {
 
     public static String getString(String keyFormat, String... keyValues) {
         String key = format(keyFormat, keyValues);
-        String result = (String)valueOperations.get(key);
+        String result = (String) valueOperations.get(key);
         return result;
     }
 
@@ -144,7 +148,7 @@ public class RedisClient {
 
     public static Long getNumber(String keyFormat, String... keyValues) {
         String key = format(keyFormat, keyValues);
-        String result = (String)valueOperations.get(key);
+        String result = (String) valueOperations.get(key);
         return result != null ? Long.valueOf(result) : Long.valueOf(0L);
     }
 
@@ -190,7 +194,7 @@ public class RedisClient {
         if (CollectionUtils.isEmpty(keys)) {
             return Long.valueOf(-1L);
         } else {
-            String key = (String)keys.iterator().next();
+            String key = (String) keys.iterator().next();
             keys.remove(key);
             Long result = setOperations.unionAndStore(key, keys, resultKey);
             return result;
@@ -201,7 +205,7 @@ public class RedisClient {
         if (CollectionUtils.isEmpty(keys)) {
             return Long.valueOf(-1L);
         } else {
-            String key = (String)keys.iterator().next();
+            String key = (String) keys.iterator().next();
             keys.remove(key);
             Long result = zSetOperations.unionAndStore(key, keys, resultKey);
             return result;
@@ -215,7 +219,7 @@ public class RedisClient {
 
     public static Long sAdd(String key1, String value, String... keyValues) {
         String key = format(key1, keyValues);
-        Long result = setOperations.add(key, new String[] {value});
+        Long result = setOperations.add(key, new String[]{value});
         return result;
     }
 
@@ -229,12 +233,12 @@ public class RedisClient {
 
     public static Long sRem(String key1, String value, String... keyValues) {
         String key = format(key1, keyValues);
-        return setOperations.remove(key, new Object[] {value});
+        return setOperations.remove(key, new Object[]{value});
     }
 
     public static String sPop(String key1, String... keyValues) {
         String key = format(key1, keyValues);
-        String result = (String)setOperations.pop(key);
+        String result = (String) setOperations.pop(key);
         return result;
     }
 
@@ -261,7 +265,7 @@ public class RedisClient {
 
     public static String hGet(String keyFormat, String hashKey, String... keyValues) {
         String key = format(keyFormat, keyValues);
-        String result = (String)hashOperations.get(key, hashKey);
+        String result = (String) hashOperations.get(key, hashKey);
         return result;
     }
 
@@ -404,12 +408,9 @@ public class RedisClient {
     /**
      * 为Zset的键值添加分数
      *
-     * @param keyFormat
-     *            键
-     * @param value
-     *            键值
-     * @param score
-     *            分数
+     * @param keyFormat 键
+     * @param value     键值
+     * @param score     分数
      */
     public static Double incrementScore(String keyFormat, String value, double score, String... keyValue) {
         String key = format(keyFormat, keyValue);
@@ -419,15 +420,12 @@ public class RedisClient {
     /**
      * 获取索引区间内的元素
      *
-     * @param keyFormat
-     *            键
-     * @param begin
-     *            键值
-     * @param end
-     *            分数
+     * @param keyFormat 键
+     * @param begin     键值
+     * @param end       分数
      */
     public static Set<ZSetOperations.TypedTuple<String>> rangeWithScores(String keyFormat, int begin, int end,
-        String... keyValue) {
+                                                                         String... keyValue) {
         String key = format(keyFormat, keyValue);
         return zSetOperations.rangeWithScores(key, begin, end);
     }
@@ -435,15 +433,12 @@ public class RedisClient {
     /**
      * 倒序获取索引区间内的元素
      *
-     * @param keyFormat
-     *            键
-     * @param begin
-     *            键值
-     * @param end
-     *            分数
+     * @param keyFormat 键
+     * @param begin     键值
+     * @param end       分数
      */
     public static Set<ZSetOperations.TypedTuple<String>> reverseRangeWithScores(String keyFormat, int begin, int end,
-        String... keyValue) {
+                                                                                String... keyValue) {
         String key = format(keyFormat, keyValue);
         return zSetOperations.reverseRangeWithScores(key, begin, end);
     }
@@ -451,10 +446,8 @@ public class RedisClient {
     /**
      * 获取索引区间内的元素
      *
-     * @param keyFormat
-     *            键
-     * @param value
-     *            键值
+     * @param keyFormat 键
+     * @param value     键值
      */
     public static Long reverseRank(String keyFormat, String value, String... keyValue) {
         String key = format(keyFormat, keyValue);
@@ -464,10 +457,8 @@ public class RedisClient {
     /**
      * 获取指定元素的分数
      *
-     * @param keyFormat
-     *            键
-     * @param value
-     *            键值
+     * @param keyFormat 键
+     * @param value     键值
      */
     public static Double score(String keyFormat, String value, String... keyValue) {
         String key = format(keyFormat, keyValue);
@@ -477,12 +468,9 @@ public class RedisClient {
     /**
      * redis addZSet数据结构 : 将ZSet元素add
      *
-     * @param keyFormat
-     *            the key
-     * @param hashValue
-     *            the hashValue
-     * @param score
-     *            分数
+     * @param keyFormat the key
+     * @param hashValue the hashValue
+     * @param score     分数
      */
     public static void addZSet(String keyFormat, String hashValue, double score, String... keyValue) {
         String key = format(keyFormat, keyValue);
@@ -492,14 +480,12 @@ public class RedisClient {
     /**
      * redis removeZSet数据结构 : 删除ZSet下某个元素
      *
-     * @param keyFormat
-     *            the key
-     * @param hashValue
-     *            the hashValue
+     * @param keyFormat the key
+     * @param hashValue the hashValue
      */
     public static Long zSetRemove(String keyFormat, String hashValue, String... keyValue) {
         String key = format(keyFormat, keyValue);
-       return zSetOperations.remove(key, hashValue);
+        return zSetOperations.remove(key, hashValue);
     }
 
     public static Boolean hasKey(String keyFormat, String... keyValues) {
@@ -514,7 +500,7 @@ public class RedisClient {
 
     public static Long zSetRemoveRangeByScore(String keyFormat, double min, double max, String... keyValues) {
         String key = format(keyFormat, keyValues);
-        return zSetOperations.removeRangeByScore(key,min,max);
+        return zSetOperations.removeRangeByScore(key, min, max);
     }
 
     public static RedisTemplate getRedisTemplate() {
@@ -524,10 +510,8 @@ public class RedisClient {
     /**
      * 获得Set两个键值的差值
      *
-     * @param key
-     *            键
-     * @param otherKey
-     *            开始
+     * @param key      键
+     * @param otherKey 开始
      * @return 区间列表
      */
     public static Set<String> sDifference(String key, String otherKey) {
@@ -537,10 +521,8 @@ public class RedisClient {
     /**
      * 随机活得N个Set列表
      *
-     * @param keyFormat
-     *            键
-     * @param num
-     *            开始
+     * @param keyFormat 键
+     * @param num       开始
      * @return 区间列表
      */
     public static Set<String> sDistinctRandomMembers(String keyFormat, long num, String... keyValue) {
@@ -551,10 +533,8 @@ public class RedisClient {
     /**
      * 随机活得N个Set列表
      *
-     * @param keyFormat
-     *            键
-     * @param geoLocation
-     *            开始
+     * @param keyFormat   键
+     * @param geoLocation 开始
      */
     public static void geoAdd(String keyFormat, RedisGeoCommands.GeoLocation<String> geoLocation, String... keyValue) {
         String key = format(keyFormat, keyValue);
@@ -564,10 +544,8 @@ public class RedisClient {
     /**
      * 随机活得N个Set列表
      *
-     * @param keyFormat
-     *            键
-     * @param value
-     *            值
+     * @param keyFormat 键
+     * @param value     值
      */
     public static void geoRemove(String keyFormat, String value, String... keyValue) {
         String key = format(keyFormat, keyValue);
@@ -577,13 +555,11 @@ public class RedisClient {
     /**
      * 获得Redis geo中 N距离内的人
      *
-     * @param keyFormat
-     *            键
-     * @param within
-     *            值
+     * @param keyFormat 键
+     * @param within    值
      */
     public static GeoResults<RedisGeoCommands.GeoLocation<String>> geoRadius(String keyFormat, Circle within,
-        RedisGeoCommands.GeoRadiusCommandArgs args, String... keyValue) {
+                                                                             RedisGeoCommands.GeoRadiusCommandArgs args, String... keyValue) {
         String key = format(keyFormat, keyValue);
         return redisTemplate.opsForGeo().radius(key, within, args);
     }
@@ -591,13 +567,12 @@ public class RedisClient {
     /**
      * 判断某个主键是否存在
      *
-     * @param key
-     *            the key
+     * @param key the key
      * @return the boolean
      */
     public static Boolean exists(final String key) {
-        return (Boolean)redisTemplate
-            .execute((RedisCallback<Boolean>)connection -> connection.exists(key.getBytes(DEFAULT_CHARSET)));
+        return (Boolean) redisTemplate
+                .execute((RedisCallback<Boolean>) connection -> connection.exists(key.getBytes(DEFAULT_CHARSET)));
     }
 
     /**
@@ -616,12 +591,9 @@ public class RedisClient {
     /**
      * 获得ZSet区间列表
      *
-     * @param key
-     *            键
-     * @param begin
-     *            开始
-     * @param end
-     *            结束
+     * @param key   键
+     * @param begin 开始
+     * @param end   结束
      * @return 区间列表
      */
     public static Set<String> zSetRange(String key, long begin, long end) {
@@ -630,10 +602,8 @@ public class RedisClient {
 
     /**
      * @param keyFormat
-     * @param minScore
-     *            最小分数
-     * @param maxScore
-     *            最大分数
+     * @param minScore  最小分数
+     * @param maxScore  最大分数
      * @param keyValue
      * @return
      */
@@ -643,19 +613,17 @@ public class RedisClient {
     }
 
 
-    public static Long zCountAllScore(String keyFormat,int start,int end ,String...keyValues) {
+    public static Long zCountAllScore(String keyFormat, int start, int end, String... keyValues) {
         String key = format(keyFormat, keyValues);
         Set<ZSetOperations.TypedTuple<String>> typedTuples = zSetOperations.reverseRangeWithScores(key, start, end);
-        return CollectionUtils.isEmpty(typedTuples)?0L:typedTuples.stream().mapToLong(typed->typed.getScore().longValue()).sum();
+        return CollectionUtils.isEmpty(typedTuples) ? 0L : typedTuples.stream().mapToLong(typed -> typed.getScore().longValue()).sum();
     }
 
     /**
      * redis addSet数据结构 : 将Set元素add
      *
-     * @param keyFormat
-     *            the key
-     * @param hashValue
-     *            the hashValue
+     * @param keyFormat the key
+     * @param hashValue the hashValue
      */
     public static void addSet(String keyFormat, String hashValue, String... keyValue) {
         String key = format(keyFormat, keyValue);
@@ -665,10 +633,8 @@ public class RedisClient {
     /**
      * redis addSet数据结构 : 将Set元素add
      *
-     * @param key
-     *            the key
-     * @param hashValue
-     *            the hashValue
+     * @param key       the key
+     * @param hashValue the hashValue
      */
     public static Long sAddAll(String key, String... hashValue) {
         return setOperations.add(key, hashValue);
@@ -698,10 +664,8 @@ public class RedisClient {
     /**
      * redis Hash数据结构 : 返回列表 key 的长度 ; 如果 key 不存在，则 key 被解释为一个空列表，返回 0 ; 如果 key 不是列表类型，返回一个错误。
      *
-     * @param keyFormat
-     *            the key
-     * @param keyValue
-     *            the key value
+     * @param keyFormat the key
+     * @param keyValue  the key value
      * @return the long
      */
     public static Long hSize(String keyFormat, String... keyValue) {
@@ -712,10 +676,8 @@ public class RedisClient {
     /**
      * redis setIfAbsent : 如果不存在则插入
      *
-     * @param key
-     *            键
-     * @param value
-     *            值
+     * @param key   键
+     * @param value 值
      * @return Boolean
      */
     public static Boolean setIfAbsent(String key, String value) {
@@ -746,10 +708,8 @@ public class RedisClient {
     /**
      * 弹出元素到另一个集合
      *
-     * @param keyFormat
-     *            键
-     * @param value
-     *            数量
+     * @param keyFormat 键
+     * @param value     数量
      * @return 区间列表
      */
     public static void sMove(String keyFormat, String value, String targetKey, String... keyValue) {
@@ -760,10 +720,8 @@ public class RedisClient {
     /**
      * 添加多个到集合中
      *
-     * @param keyFormat
-     *            键
-     * @param value
-     *            值
+     * @param keyFormat 键
+     * @param value     值
      * @return 区间列表
      */
     public static void putAll(String keyFormat, Map<String, String> value, String... keyValue) {
@@ -774,8 +732,7 @@ public class RedisClient {
     /**
      * 获取队列长度
      *
-     * @param keyFormat
-     *            键
+     * @param keyFormat 键
      * @return 区间列表
      */
     public static Long sSize(String keyFormat, String... keyValue) {
@@ -786,8 +743,7 @@ public class RedisClient {
     /**
      * 获取队列长度
      *
-     * @param key
-     *            键
+     * @param key 键
      * @return 区间列表
      */
     public static Set<String> setUnion(Set<String> key) {
@@ -797,8 +753,7 @@ public class RedisClient {
     /**
      * 随机获得
      *
-     * @param key
-     *            键
+     * @param key 键
      * @return 区间列表
      */
     public static String sRandomMember(String key) {
@@ -826,6 +781,201 @@ public class RedisClient {
     public static void lTrim(String keyFormat, long start, long end, String... keyValues) {
         String key = format(keyFormat, keyValues);
         listOperations.trim(key, start, end);
+    }
+
+
+    /*********************************************************************************
+     *
+     * 对bitmap的操作
+     *
+     ********************************************************************************/
+
+    /**
+     * 将指定param的值设置为1，{@param param}会经过hash计算进行存储。
+     *
+     * @param key   bitmap结构的key
+     * @param param 要设置偏移的key，该key会经过hash运算。
+     * @param value true：即该位设置为1，否则设置为0
+     * @return 返回设置该value之前的值。
+     */
+    public static Boolean setBit(String key, String param, boolean value) {
+        return valueOperations.setBit(key, hash(param), value);
+    }
+
+    /**
+     * 将指定param的值设置为0，{@param param}会经过hash计算进行存储。
+     *
+     * @param key   bitmap结构的key
+     * @param param 要移除偏移的key，该key会经过hash运算。
+     * @return 若偏移位上的值为1，那么返回true。
+     */
+    public static Boolean getBit(String key, String param) {
+        return valueOperations.getBit(key, hash(param));
+    }
+
+
+    /**
+     * 将指定offset偏移量的值设置为1；
+     *
+     * @param key    bitmap结构的key
+     * @param offset 指定的偏移量。
+     * @param value  true：即该位设置为1，否则设置为0
+     * @return 返回设置该value之前的值。
+     */
+    public static Boolean setBit(String key, Long offset, boolean value) {
+        return valueOperations.setBit(key, offset, value);
+    }
+
+    /**
+     * 将指定offset偏移量的值设置为0；
+     *
+     * @param key    bitmap结构的key
+     * @param offset 指定的偏移量。
+     * @return 若偏移位上的值为1，那么返回true。
+     */
+    public static Boolean getBit(String key, long offset) {
+        return valueOperations.getBit(key, offset);
+    }
+
+    /**
+     * 统计对应的bitmap上value为1的数量
+     *
+     * @param key bitmap的key
+     * @return value等于1的数量
+     */
+    public static Long bitCount(String key) {
+        Object execute = redisTemplate.execute((RedisCallback<Long>) con -> con.bitCount(key.getBytes()));
+        return Long.valueOf(String.valueOf(execute));
+    }
+
+    /**
+     * 统计指定范围中value为1的数量
+     *
+     * @param key   bitMap中的key
+     * @param start 该参数的单位是byte（1byte=8bit），{@code setBit(key,7,true);}进行存储时，单位是bit。那么只需要统计[0,1]便可以统计到上述set的值。
+     * @param end   该参数的单位是byte。
+     * @return 在指定范围[start*8,end*8]内所有value=1的数量
+     */
+    public static Long bitCount(String key, int start, int end) {
+        Object execute = redisTemplate.execute((RedisCallback<Long>) con -> con.bitCount(key.getBytes(), start, end));
+        return Long.valueOf(String.valueOf(execute));
+    }
+
+
+    /**
+     * 对一个或多个保存二进制的字符串key进行元操作，并将结果保存到saveKey上。
+     * <p>
+     * bitop and saveKey key [key...]，对一个或多个key逻辑并，结果保存到saveKey。
+     * bitop or saveKey key [key...]，对一个或多个key逻辑或，结果保存到saveKey。
+     * bitop xor saveKey key [key...]，对一个或多个key逻辑异或，结果保存到saveKey。
+     * bitop xor saveKey key，对一个或多个key逻辑非，结果保存到saveKey。
+     * <p>
+     *
+     * @param op      元操作类型；
+     * @param saveKey 元操作后将结果保存到saveKey所在的结构中。
+     * @param desKey  需要进行元操作的类型。
+     * @return 1：返回元操作值。
+     */
+    public static Long bitOp(RedisStringCommands.BitOperation op, String saveKey, String... desKey) {
+        byte[][] bytes = new byte[desKey.length][];
+        for (int i = 0; i < desKey.length; i++) {
+            bytes[i] = desKey[i].getBytes();
+        }
+        Object execute = redisTemplate.execute((RedisCallback<Long>) con -> con.bitOp(op, saveKey.getBytes(), bytes));
+        return Long.valueOf(String.valueOf(execute));
+    }
+
+    /**
+     * 对一个或多个保存二进制的字符串key进行元操作，并将结果保存到saveKey上，并返回统计之后的结果。
+     *
+     * @param op      元操作类型；
+     * @param saveKey 元操作后将结果保存到saveKey所在的结构中。
+     * @param desKey  需要进行元操作的类型。
+     * @return 返回saveKey结构上value=1的所有数量值。
+     */
+    public static Long bitOpResult(RedisStringCommands.BitOperation op, String saveKey, String... desKey) {
+        bitOp(op, saveKey, desKey);
+        return bitCount(saveKey);
+    }
+
+    /**
+     * guava依赖获取hash值。
+     */
+    private static long hash(String key) {
+        Charset charset = Charset.forName("UTF-8");
+        return Math.abs(Hashing.murmur3_32().hashObject(key, Funnels.stringFunnel(charset)).asInt());
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(ONE_BITMAP_SIZE);
+        System.out.println(1024*1024);
+        long r1=223456;
+        BitMapKey u1 = computeUserGroup(r1, ONE_BITMAP_SIZE, SHARD_COUNT);
+        System.out.println(u1);
+
+        long r2=123456;
+        BitMapKey u2 = computeUserGroup(r2, ONE_BITMAP_SIZE, SHARD_COUNT);
+        System.out.println(u2);
+
+
+        String redisKey = u2.generateKeyWithPrefix("ttt");
+        System.out.println(redisKey);
+
+        long hash = hash("15673821");
+
+        System.out.println("hash==="+hash);
+
+
+    }
+
+    // 单个bitmap占用1M内存
+    // 如果useId < 100亿， 则会分到7000个分组里
+    private static final int ONE_BITMAP_SIZE = 1 << 20;
+    // 同一个分组里的的useId划分到20个bitmap里
+    // 避免出现范围用户太多导致查询时出现热key
+    private static final int SHARD_COUNT = 20;
+
+    // 计算用户的 raw， shard， 和对应的offset
+    public static BitMapKey computeUserGroup(long userId, int oneBitMapSize, int shardCount) {
+        //获取组
+        long groupIndex = userId / oneBitMapSize;
+        //获取分片位置
+        int shardIndex = Math.abs((int) (hash(userId+"") % shardCount));
+        //获取（组-分片）下的offset位置
+        int bitIndex = (int) (userId - groupIndex * oneBitMapSize);
+        //获取到对象
+        return new BitMapKey((int) groupIndex, shardIndex, bitIndex);
+    }
+
+    @Data
+    public static class BitMapKey {
+        /**
+         * 组
+         */
+        private final int groupIndex;
+        /**
+         * 组中分片
+         */
+        private final int shardIndex;
+        /**
+         *
+         */
+        private final int bitIndex;
+
+        public BitMapKey(int groupIndex, int shardIndex, int bitIndex) {
+            this.groupIndex = groupIndex;
+            this.shardIndex = shardIndex;
+            this.bitIndex = bitIndex;
+        }
+
+        public int getBitIndex() {
+            return bitIndex;
+        }
+
+        public String generateKeyWithPrefix(String prefix) {
+            return String.join(":", prefix, groupIndex + "", shardIndex + "");
+        }
     }
 
 }
