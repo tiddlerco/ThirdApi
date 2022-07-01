@@ -6,7 +6,7 @@
  * 版权所有，侵权必究！
  */
 
-package com.coderbuff.third1simple.consont;
+package com.redis.consont;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;

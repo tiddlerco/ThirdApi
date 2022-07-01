@@ -1,4 +1,4 @@
-package com.coderbuff.third1simple;
+package com.redis;
 
 import lombok.Getter;
 import lombok.Setter;

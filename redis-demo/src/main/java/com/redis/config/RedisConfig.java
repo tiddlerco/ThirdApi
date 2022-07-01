@@ -1,4 +1,4 @@
-package com.coderbuff.third1simple.config;
+package com.redis.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

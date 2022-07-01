@@ -1,4 +1,4 @@
-package com.coderbuff.third1simple;
+package com.redis;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;

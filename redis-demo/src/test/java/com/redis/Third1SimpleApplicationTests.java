@@ -1,4 +1,4 @@
-package com.coderbuff.third1simple;
+package com.redis;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

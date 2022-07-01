@@ -1,11 +1,8 @@
-package com.coderbuff.third1simple.controller;
+package com.redis.controller;
 
 
-import com.alibaba.csp.sentinel.annotation.SentinelResource;
-import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.alibaba.fastjson.JSON;
-import com.coderbuff.third1simple.StockDTO;
-import com.coderbuff.third1simple.config.RedisClient;
+import com.redis.config.RedisClient;
+import org.redisson.api.RBloomFilter;
 import org.redisson.api.RSemaphore;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +10,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -31,8 +30,10 @@ public class SkillGoodsController {
     @Autowired
     RedissonClient redissonClient;
 
+    @Resource
+    RBloomFilter<String> rBloomFilter;
 
-    @SentinelResource(value = "getSemaphore", blockHandler = "exceptionHandler")
+
     @GetMapping("/getSemaphore")
     public String testRedis() {
         try {
@@ -48,9 +49,26 @@ public class SkillGoodsController {
         return "抢购失败";
     }
 
-    public String exceptionHandler(BlockException e) {
-        return "add被限流了";
+
+
+    @GetMapping("/testAddBloomFilter")
+    public String testAddBloomFilter() {
+        boolean testBloomKey = rBloomFilter.add("testBloomKey");
+        System.out.println(testBloomKey);
+        RedisClient.set("testBloomKey","testBloomValue");
+        return "success";
     }
+
+    @GetMapping("/testGetBloomFilter")
+    public String testGetBloomFilter() {
+        boolean testBloomKey = rBloomFilter.contains("testBloomKey");
+        System.out.println(testBloomKey);
+        RedisClient.set("testBloomKey","testBloomValue");
+        return "抢购失败";
+    }
+
+
+
 
 
 }

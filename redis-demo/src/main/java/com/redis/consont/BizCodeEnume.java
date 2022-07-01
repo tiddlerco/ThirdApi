@@ -1,4 +1,4 @@
-package com.coderbuff.third1simple.consont;
+package com.redis.consont;
 
 /***
  * 错误码和错误信息定义类

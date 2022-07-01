@@ -1,4 +1,4 @@
-package com.coderbuff.third1simple.config;
+package com.redis.config;
 
 import com.google.common.hash.Funnels;
 import com.google.common.hash.Hashing;
