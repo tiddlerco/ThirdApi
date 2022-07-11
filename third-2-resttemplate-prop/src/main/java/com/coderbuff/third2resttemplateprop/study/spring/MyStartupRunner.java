@@ -17,7 +17,6 @@ import javax.annotation.Resource;
  */
 
 //如果这里不加入@Component注解  run方法不会执行,三个@Resource也不会报错
-//ApplicationContext也可以直接注入使用！！！
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
 public class MyStartupRunner implements CommandLineRunner {
@@ -27,6 +26,7 @@ public class MyStartupRunner implements CommandLineRunner {
     @Resource
     private MyBeanFactory myBeanFactory;
 
+    //ApplicationContext也可以直接注入使用！！！
     @Resource
     private ApplicationContext applicationContext;
 
