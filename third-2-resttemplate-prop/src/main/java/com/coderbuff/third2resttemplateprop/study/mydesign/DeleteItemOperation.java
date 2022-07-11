@@ -1,6 +1,9 @@
 package com.coderbuff.third2resttemplateprop.study.mydesign;
 
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,7 +13,9 @@ import java.util.List;
  * @Date 2021/12/24 09:42
  */
 @Component
-public class DeleteItemOperation extends CmdbItemOperationAbstract {
+//@Order生效的前提条件是实现CommandLineRunner接口
+@Order(value = 2)
+public class DeleteItemOperation extends CmdbItemOperationAbstract implements InitializingBean, CommandLineRunner {
 
 
     /**
@@ -24,5 +29,15 @@ public class DeleteItemOperation extends CmdbItemOperationAbstract {
     @Override
     public void doAction() {
 
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("DeleteItemOperation初始化");
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("DeleteItemOperation CommandLineRunner");
     }
 }

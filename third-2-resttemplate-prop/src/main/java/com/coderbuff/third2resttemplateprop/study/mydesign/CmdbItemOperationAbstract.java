@@ -1,9 +1,7 @@
 package com.coderbuff.third2resttemplateprop.study.mydesign;
 
 
-import com.coderbuff.third2resttemplateprop.study.spring.SpringContextUtil;
 
-import java.util.List;
 
 /**
  * @Author 喻可
