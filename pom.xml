@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>third-1-simple</module>
         <module>third-gateway</module>
     </modules>
 
