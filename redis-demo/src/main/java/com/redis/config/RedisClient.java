@@ -1,6 +1,7 @@
 package com.redis.config;
 
 import com.google.common.hash.Funnels;
+import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -798,8 +799,8 @@ public class RedisClient {
      * @param value true：即该位设置为1，否则设置为0
      * @return 返回设置该value之前的值。
      */
-    public static Boolean setBit(String key, String param, boolean value) {
-        return valueOperations.setBit(key, hash(param), value);
+    public static Boolean setBit(String key, Long param, boolean value) {
+        return valueOperations.setBit(key, hashLong(param), value);
     }
 
     /**
@@ -809,33 +810,10 @@ public class RedisClient {
      * @param param 要移除偏移的key，该key会经过hash运算。
      * @return 若偏移位上的值为1，那么返回true。
      */
-    public static Boolean getBit(String key, String param) {
-        return valueOperations.getBit(key, hash(param));
+    public static Boolean getBit(String key, Long param) {
+        return valueOperations.getBit(key, hashLong(param));
     }
 
-
-    /**
-     * 将指定offset偏移量的值设置为1；
-     *
-     * @param key    bitmap结构的key
-     * @param offset 指定的偏移量。
-     * @param value  true：即该位设置为1，否则设置为0
-     * @return 返回设置该value之前的值。
-     */
-    public static Boolean setBit(String key, Long offset, boolean value) {
-        return valueOperations.setBit(key, offset, value);
-    }
-
-    /**
-     * 将指定offset偏移量的值设置为0；
-     *
-     * @param key    bitmap结构的key
-     * @param offset 指定的偏移量。
-     * @return 若偏移位上的值为1，那么返回true。
-     */
-    public static Boolean getBit(String key, long offset) {
-        return valueOperations.getBit(key, offset);
-    }
 
     /**
      * 统计对应的bitmap上value为1的数量
@@ -906,6 +884,12 @@ public class RedisClient {
         return Math.abs(Hashing.murmur3_32().hashObject(key, Funnels.stringFunnel(charset)).asInt());
     }
 
+    private static long hashLong(Long key) {
+        HashCode hashCode = Hashing.murmur3_32().hashLong(key);
+        long i1 = Math.abs(Hashing.consistentHash(hashCode, 10000000));
+        return i1;
+    }
+
     public static void main(String[] args) {
 
         System.out.println(ONE_BITMAP_SIZE);
@@ -922,7 +906,7 @@ public class RedisClient {
         String redisKey = u2.generateKeyWithPrefix("ttt");
         System.out.println(redisKey);
 
-        long hash = hash("15673821");
+        long hash = hashLong(851812399886368000L);
 
         System.out.println("hash==="+hash);
 
