@@ -36,6 +36,7 @@ public class RedissonBloomFilterDemo {
 
         // 1测试  布隆过滤器有+redis有
         rBloomFilter.add("10087");
+        //数据存储到redis
         redissonClient.getBucket("10087", new StringCodec()).set("chinamobile10086");
 
         // 2测试  布隆过滤器有+redis无
