@@ -38,7 +38,8 @@ public class RedisClient {
 
     private static ZSetOperations<String, String> zSetOperations;
 
-    @Autowired
+    //这里的@Autowired可以省略!!!
+//    @Autowired
     public RedisClient(ValueOperations<String, Object> valueOperations,
                        HashOperations<String, String, String> hashOperations, SetOperations<String, String> setOperations,
                        RedisTemplate redisTemplate, ListOperations<String, String> listOperations,
