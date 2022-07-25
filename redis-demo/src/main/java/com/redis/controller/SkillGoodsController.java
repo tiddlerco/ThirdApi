@@ -31,7 +31,7 @@ public class SkillGoodsController {
     @Autowired
     RedissonClient redissonClient;
 
-    @Resource(name = "phoneFilter")
+    @Resource
     RBloomFilter<String> phoneFilter;
 
 
