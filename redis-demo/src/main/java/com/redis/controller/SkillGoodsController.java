@@ -6,6 +6,7 @@ import org.redisson.api.RBloomFilter;
 import org.redisson.api.RSemaphore;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class SkillGoodsController {
     RedissonClient redissonClient;
 
     @Resource
-    RBloomFilter<String> rBloomFilter;
+    RBloomFilter<String> phoneFilter;
 
 
     @GetMapping("/getSemaphore")
@@ -50,20 +51,37 @@ public class SkillGoodsController {
     }
 
 
-
     @GetMapping("/testAddBloomFilter")
     public String testAddBloomFilter() {
-        boolean testBloomKey = rBloomFilter.add("testBloomKey");
+        boolean testBloomKey = phoneFilter.add("testBloomKey");
         System.out.println(testBloomKey);
         RedisClient.set("testBloomKey","testBloomValue");
         return "success";
     }
 
+
+    @GetMapping("/testBitMap")
+    public String testBitMap() {
+        RedisClient.setBit("testBit", 851813273773800960L, true);
+        RedisClient.setBit("testBit", 851812399886368000L, true);
+        RedisClient.setBit("testBit", 851809222432653056L, true);
+        RedisClient.setBit("testBit", 851797367937040000L, true);
+        Boolean testBit = RedisClient.getBit("testBit", 851813273773800960L);
+        Long testBit1 = RedisClient.bitCount("testBit");
+        System.out.println(testBit);
+        System.out.println(testBit1);
+
+        return "success";
+    }
+
     @GetMapping("/testGetBloomFilter")
     public String testGetBloomFilter() {
-        boolean testBloomKey = rBloomFilter.contains("testBloomKey");
+        boolean testBloomKey = phoneFilter.contains("testBloomKey");
         System.out.println(testBloomKey);
-        RedisClient.set("testBloomKey","testBloomValue");
+        if(testBloomKey){
+            return "抢购成功";
+        }
+
         return "抢购失败";
     }
 
