@@ -2,9 +2,7 @@ package com.redis.controller;
 
 
 import com.redis.config.RedisClient;
-import org.redisson.api.RBloomFilter;
-import org.redisson.api.RSemaphore;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -85,6 +86,25 @@ public class SkillGoodsController {
         return "抢购失败";
     }
 
+
+    @GetMapping("/testAsyncReentrantLock")
+    public void testAsyncReentrantLock() throws ExecutionException, InterruptedException {
+        RLock lock = redissonClient.getLock("anyLock");
+        try{
+            lock.lockAsync();
+            lock.lockAsync(10, TimeUnit.SECONDS);
+            System.out.println("准备获取锁");
+            Future<Boolean> res = lock.tryLockAsync(3, 10, TimeUnit.SECONDS);
+            RFuture<Void> voidRFuture = lock.lockAsync();
+            if(res.get()){
+                System.out.println("执行业务方法");
+            }
+        } finally {
+            System.out.println("释放锁");
+            lock.unlock();
+        }
+
+    }
 
 
 
