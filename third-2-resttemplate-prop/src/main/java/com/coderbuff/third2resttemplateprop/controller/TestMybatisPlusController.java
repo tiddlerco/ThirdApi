@@ -90,6 +90,7 @@ public class TestMybatisPlusController {
     /**
      * 更新带Wrapper
      * 更新所有年龄为2的人的名字为233
+     * 补充：updateById更新失败会抛出异常
      */
     @GetMapping("/updateByWrapper")
     @Transactional(rollbackFor = Exception.class)
