@@ -31,6 +31,11 @@ public class Test {
             System.out.println(values);
         }
 
+        stringMultiValueMap.entrySet().forEach(item->{
+            System.out.println(item.getKey() + ":" + item.getValue());
+        });
+
+
     }
 
 }
