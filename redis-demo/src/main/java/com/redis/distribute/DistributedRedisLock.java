@@ -71,6 +71,7 @@ public class DistributedRedisLock implements Lock {
 
     @Override
     public void unlock() {
+        //if redis.call('hexists', KEYS[1], ARGV[1]) == 0表示不是当前线程的锁
         String script = "if redis.call('hexists', KEYS[1], ARGV[1]) == 0 " +
                 "then " +
                 "   return nil " +
