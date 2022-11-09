@@ -17,7 +17,7 @@ import java.util.concurrent.locks.Lock;
  */
 public class DistributedRedisLock implements Lock {
 
-    private StringRedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     private String lockName;
 
@@ -25,8 +25,8 @@ public class DistributedRedisLock implements Lock {
 
     private long expire = 30;  // 默认过期时间30ms
 
-    public DistributedRedisLock(StringRedisTemplate redisTemplate, String lockName, String uuid) {
-        this.redisTemplate = redisTemplate;
+    public DistributedRedisLock(StringRedisTemplate stringRedisTemplate, String lockName, String uuid) {
+        this.stringRedisTemplate = stringRedisTemplate;
         this.lockName = lockName;
         this.uuid = uuid + ":" + Thread.currentThread().getId();  // 这步关键
     }
@@ -61,7 +61,7 @@ public class DistributedRedisLock implements Lock {
                 "else " +
                 "   return 0 " +
                 "end";
-        while (!this.redisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class), Arrays.asList(lockName), uuid, String.valueOf(expire))) {
+        while (!this.stringRedisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class), Arrays.asList(lockName), uuid, String.valueOf(expire))) {
             Thread.sleep(50);
         }
         // 加锁成功，返回之前，开启定时器自动续期
@@ -81,7 +81,7 @@ public class DistributedRedisLock implements Lock {
                 "else " +
                 "   return 0 " +
                 "end";
-        Long flag = this.redisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Arrays.asList(lockName), uuid);
+        Long flag = this.stringRedisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Arrays.asList(lockName), uuid);
         if (flag == null) {
             throw new IllegalMonitorStateException("this lock doesn't belong to you!");
         }
@@ -100,7 +100,7 @@ public class DistributedRedisLock implements Lock {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {  // 开启的定时器是一个子线程，不能用上面的getId方法，而是直接在主线程中拼好uuid（该uuid是生成的uuid+线程数），然后这里用
-                if (redisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class), Arrays.asList(lockName), uuid, String.valueOf(expire))) {
+                if (stringRedisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class), Arrays.asList(lockName), uuid, String.valueOf(expire))) {
                     renewExpire();  // 再次开启一次性任务，直到上面续期失败了就直接结束了
                 }  // 另一种实现方式是用周期任务，在unlock中取消定时任务
             }

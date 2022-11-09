@@ -15,8 +15,8 @@ import java.util.UUID;
 @Component
 public class DistributedLockClient {
 
-    @Resource
-    private StringRedisTemplate redisTemplate;
+    @Resource()
+    private StringRedisTemplate stringRedisTemplate;
 
     private String uuid;
 
@@ -29,6 +29,6 @@ public class DistributedLockClient {
     }
 
     public DistributedRedisLock getRedisLock(String lockName) {
-        return new DistributedRedisLock(redisTemplate, lockName, uuid);
+        return new DistributedRedisLock(stringRedisTemplate, lockName, uuid);
     }
 }

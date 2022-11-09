@@ -36,6 +36,25 @@ public class SkillGoodsController {
     RBloomFilter<String> phoneFilter;
 
 
+
+    @GetMapping("/testReentrantLock")
+    public String testReentrantLock() throws InterruptedException {
+        RLock clientLock = redissonClient.getLock("reentrantLock");
+        clientLock.lock();
+        test();
+        Thread.sleep(5000);
+        clientLock.unlock();
+        return "success";
+    }
+
+    public void test() throws InterruptedException {
+        RLock clientLock = redissonClient.getLock("reentrantLock");
+        clientLock.lock();
+        Thread.sleep(5000);
+        clientLock.unlock();
+    }
+
+
     @GetMapping("/getSemaphore")
     public String testRedis() {
         try {
