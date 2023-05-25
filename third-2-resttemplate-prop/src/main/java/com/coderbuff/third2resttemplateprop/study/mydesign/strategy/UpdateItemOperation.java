@@ -1,4 +1,4 @@
-package com.coderbuff.third2resttemplateprop.study.mydesign;
+package com.coderbuff.third2resttemplateprop.study.mydesign.strategy;
 
 
 import lombok.extern.slf4j.Slf4j;

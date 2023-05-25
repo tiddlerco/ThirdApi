@@ -1,4 +1,4 @@
-package com.coderbuff.third2resttemplateprop.study.mydesign;
+package com.coderbuff.third2resttemplateprop.study.mydesign.strategy;
 
 /**
  * @Author 喻可

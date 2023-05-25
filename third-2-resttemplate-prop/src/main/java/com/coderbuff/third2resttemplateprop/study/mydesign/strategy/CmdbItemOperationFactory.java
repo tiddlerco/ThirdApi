@@ -1,9 +1,7 @@
-package com.coderbuff.third2resttemplateprop.study.mydesign;
+package com.coderbuff.third2resttemplateprop.study.mydesign.strategy;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
