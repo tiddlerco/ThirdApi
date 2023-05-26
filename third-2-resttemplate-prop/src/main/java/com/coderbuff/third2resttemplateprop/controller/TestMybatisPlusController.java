@@ -252,7 +252,7 @@ public class TestMybatisPlusController {
     @GetMapping("/testPineline")
     public void testPineline() {
         try {
-            boolean b = modelService.buildModelInstance();
+            Boolean b = modelService.buildModelInstance();
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

@@ -12,6 +12,8 @@ import com.coderbuff.third2resttemplateprop.study.mydesign.pipeline.pipeline.Pip
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -36,7 +38,7 @@ public class PipelineExecutor {
      * 管道线程池
      */
     @Resource
-    private ThreadPoolTaskExecutor pipelineThreadPool;
+    private ThreadPoolTaskExecutor taskExecutor;
 
     @Autowired
     private CommonHeadHandler commonHeadHandler;
@@ -59,7 +61,11 @@ public class PipelineExecutor {
      * @param context 输入的上下文数据
      * @return 处理过程中管道是否畅通，畅通返回 true，不畅通返回 false
      */
-    public boolean acceptSync(PipelineContext context) {
+    @Async
+    public Future<String> acceptSync(PipelineContext context) {
+
+        System.out.println("===Async注解====acceptSync======" + Thread.currentThread().getName());
+
         Objects.requireNonNull(context, "上下文数据不能为 null");
         // 拿到数据类型
         Class<? extends PipelineContext> dataType = context.getClass();
@@ -67,7 +73,7 @@ public class PipelineExecutor {
 
         if (CollectionUtils.isEmpty(pipeline)) {
             logger.error("{} 的管道为空", dataType.getSimpleName());
-            return false;
+            return new AsyncResult<>("false");
         }
 
         // 【通用头处理器】处理
@@ -92,7 +98,7 @@ public class PipelineExecutor {
         // 【通用尾处理器】处理
         commonTailHandler.handle(context);
 
-        return lastSuccess;
+        return new AsyncResult<>("success");
     }
 
     /**
@@ -101,14 +107,18 @@ public class PipelineExecutor {
      * @param context  上下文数据
      * @param callback 处理完成的回调
      */
-    public boolean acceptAsync(PipelineContext context, BiConsumer<PipelineContext, Boolean> callback) throws ExecutionException, InterruptedException {
-        Future<Boolean> submit = pipelineThreadPool.submit(() -> {
-            boolean success = acceptSync(context);
+    public String acceptAsync(PipelineContext context, BiConsumer<PipelineContext, String> callback) throws ExecutionException, InterruptedException {
+        Future<String> submit = taskExecutor.submit(() -> {
+
+            System.out.println("======acceptAsync=====" + Thread.currentThread().getName());
+
+            //注意 @Async是基于aop实现的  这里相当于本类调用acceptSync方法，会导致@Async失效，ModelServiceImpl里的调用方式就不会
+            Future<String> stringFuture = acceptSync(context);
 
             if (callback != null) {
-                callback.accept(context, success);
+                callback.accept(context, stringFuture.get());
             }
-            return success;
+            return stringFuture.get();
         });
         return submit.get();
     }

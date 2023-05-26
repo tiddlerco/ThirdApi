@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 
 /**
@@ -31,15 +32,19 @@ public class ModelServiceImpl {
     public boolean buildModelInstance() throws ExecutionException, InterruptedException {
         InstanceBuildContext data = createPipelineData();
         //异步获取
-        boolean success = pipelineExecutor.acceptAsync(data, new BiConsumer<PipelineContext, Boolean>() {
+        String asyncResult = pipelineExecutor.acceptAsync(data, new BiConsumer<PipelineContext, String>() {
             @Override
-            public void accept(PipelineContext pipelineContext, Boolean aBoolean) {
-                //回调的操作逻辑
+            public void accept(PipelineContext pipelineContext, String result) {
+                System.out.println("========回调逻辑  result=====" + result);
             }
         });
+        Future<String> stringFuture = pipelineExecutor.acceptSync(data);
+        String result = stringFuture.get();
+
+        System.out.println("===============" + result);
 
         // 创建模型实例成功
-        if (success) {
+        if (asyncResult.equals("success")) {
             return true;
         }
 
@@ -58,10 +63,6 @@ public class ModelServiceImpl {
         request.setFormInput(map);
 
         return request;
-    }
-
-    public static class InstanceBuildRequest {
-
     }
 
 }

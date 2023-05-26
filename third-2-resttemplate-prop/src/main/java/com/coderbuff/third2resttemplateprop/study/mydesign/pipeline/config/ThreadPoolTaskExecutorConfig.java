@@ -18,8 +18,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class ThreadPoolTaskExecutorConfig {
 
-    @Bean("taskExector")
-    public Executor taskExector() {
+    @Bean("taskExecutor")
+    public Executor taskExecutor() {
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         int i = Runtime.getRuntime().availableProcessors();//获取到服务器的cpu内核
