@@ -1,12 +1,10 @@
-package com.coderbuff.third2resttemplateprop.study.mydesign;
+package com.coderbuff.third2resttemplateprop.study.mydesign.strategy;
 
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @Author 喻可

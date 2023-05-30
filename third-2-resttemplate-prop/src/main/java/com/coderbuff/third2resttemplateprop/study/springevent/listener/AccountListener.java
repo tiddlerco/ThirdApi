@@ -16,6 +16,8 @@ public class AccountListener {
     @EventListener
     public void sendEmailOnAccountCreatedEvent(AccountCreatedEvent event) {
 
+        System.out.println("=======sendEmailOnAccountCreatedEvent=======" + Thread.currentThread().getName());
+
         System.out.println("=====异步输出======"+event.getEventData().getName()+"================");
 
         System.out.println("异步开始睡眠");

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.coderbuff.third2resttemplateprop.common.page.UserPage;
 import com.coderbuff.third2resttemplateprop.entity.User;
 import com.coderbuff.third2resttemplateprop.service.UserService;
+import com.coderbuff.third2resttemplateprop.study.mydesign.pipeline.application.ModelServiceImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @Author 喻可
@@ -29,6 +31,9 @@ public class TestMybatisPlusController {
 
     @Resource
     private ThreadPoolTaskExecutor executor;
+
+    @Resource
+    private ModelServiceImpl modelService;
 
 
     /**
@@ -238,6 +243,21 @@ public class TestMybatisPlusController {
 
         System.out.println(JSON.toJSONString(userPage));
 
+    }
+
+
+    /**
+     * 添加
+     */
+    @GetMapping("/testPineline")
+    public void testPineline() {
+        try {
+            Boolean b = modelService.buildModelInstance();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 public class ThreadPoolConfig {
-    @Bean
+    @Bean("threadPoolTaskExecutor")
     public ThreadPoolTaskExecutor threadPoolExecutor(){
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         int i = Runtime.getRuntime().availableProcessors();
