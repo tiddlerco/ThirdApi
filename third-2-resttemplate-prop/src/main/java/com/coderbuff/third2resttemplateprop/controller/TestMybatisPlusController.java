@@ -129,8 +129,10 @@ public class TestMybatisPlusController {
         User user = new User();
         user.setName("乐佳加").setAge(18);
 
-        boolean update = userService.update(user, Wrappers.<User>lambdaUpdate().eq(User::getAge, 1)
-        );
+        boolean update = userService.update(user, Wrappers.<User>lambdaUpdate().eq(User::getAge, 1));
+
+        boolean updateResult = userService.lambdaUpdate().eq(User::getName, user.getName()).set(User::getAge, user.getAge()).update();
+
     }
 
 
@@ -150,6 +152,8 @@ public class TestMybatisPlusController {
         List<User> list = userService.list();
 
         List<User> useList = userService.list(Wrappers.<User>lambdaQuery().eq(User::getName, "乐佳加"));
+
+        List<User> chainQuery = userService.lambdaQuery().eq(User::getAge, 1).list();
 
 
         System.out.println(byId);
