@@ -1,8 +1,10 @@
 package com.coderbuff.third2resttemplateprop.study.springevent.listener;
 
+import com.coderbuff.third2resttemplateprop.study.springevent.entity.Account;
 import com.coderbuff.third2resttemplateprop.study.springevent.eventclass2.AccountCreatedEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,6 +24,17 @@ public class SyncAccountListener {
             System.out.println("非异步开始睡眠");
             Thread.sleep(3000);
             System.out.println("非异步睡眠结束");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @Async
+    @EventListener
+    public void doEvent(Account event) {
+        try {
+            String name = event.getName();
+            System.out.println("监听异步线程执行完毕=======name=======:" + name);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
