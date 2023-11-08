@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.coderbuff.third2resttemplateprop.common.page.UserPage;
 import com.coderbuff.third2resttemplateprop.entity.User;
 import com.coderbuff.third2resttemplateprop.service.UserService;
+import com.coderbuff.third2resttemplateprop.study.aopApplication.BusinessService;
 import com.coderbuff.third2resttemplateprop.study.mydesign.pipeline.application.ModelServiceImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,15 @@ public class TestMybatisPlusController {
 
     @Resource
     private ModelServiceImpl modelService;
+    @Resource
+    private BusinessService businessService;
+
+
+
+    @GetMapping("/testBusiness")
+    public void testBusiness() {
+        businessService.executeBusinessLogic();
+    }
 
 
     /**
