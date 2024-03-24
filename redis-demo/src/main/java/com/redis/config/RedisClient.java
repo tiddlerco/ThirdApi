@@ -4,7 +4,6 @@ import com.google.common.hash.Funnels;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -38,8 +37,6 @@ public class RedisClient {
 
     private static ZSetOperations<String, String> zSetOperations;
 
-    //这里的@Autowired可以省略!!!
-//    @Autowired
     public RedisClient(ValueOperations<String, Object> valueOperations,
                        HashOperations<String, String, String> hashOperations, SetOperations<String, String> setOperations,
                        RedisTemplate redisTemplate, ListOperations<String, String> listOperations,
@@ -889,78 +886,6 @@ public class RedisClient {
         HashCode hashCode = Hashing.murmur3_32().hashLong(key);
         long i1 = Math.abs(Hashing.consistentHash(hashCode, 10000000));
         return i1;
-    }
-
-    public static void main(String[] args) {
-
-        System.out.println(ONE_BITMAP_SIZE);
-        System.out.println(1024*1024);
-        long r1=223456;
-        BitMapKey u1 = computeUserGroup(r1, ONE_BITMAP_SIZE, SHARD_COUNT);
-        System.out.println(u1);
-
-        long r2=123456;
-        BitMapKey u2 = computeUserGroup(r2, ONE_BITMAP_SIZE, SHARD_COUNT);
-        System.out.println(u2);
-
-
-        String redisKey = u2.generateKeyWithPrefix("ttt");
-        System.out.println(redisKey);
-
-        long hash = hashLong(851812399886368000L);
-
-        System.out.println("hash==="+hash);
-
-
-    }
-
-    // 单个bitmap占用1M内存
-    // 如果useId < 100亿， 则会分到7000个分组里
-    private static final int ONE_BITMAP_SIZE = 1 << 20;
-    // 同一个分组里的的useId划分到20个bitmap里
-    // 避免出现范围用户太多导致查询时出现热key
-    private static final int SHARD_COUNT = 20;
-
-    // 计算用户的 raw， shard， 和对应的offset
-    public static BitMapKey computeUserGroup(long userId, int oneBitMapSize, int shardCount) {
-        //获取组
-        long groupIndex = userId / oneBitMapSize;
-        //获取分片位置
-        int shardIndex = Math.abs((int) (hash(userId+"") % shardCount));
-        //获取（组-分片）下的offset位置
-        int bitIndex = (int) (userId - groupIndex * oneBitMapSize);
-        //获取到对象
-        return new BitMapKey((int) groupIndex, shardIndex, bitIndex);
-    }
-
-    @Data
-    public static class BitMapKey {
-        /**
-         * 组
-         */
-        private final int groupIndex;
-        /**
-         * 组中分片
-         */
-        private final int shardIndex;
-        /**
-         *
-         */
-        private final int bitIndex;
-
-        public BitMapKey(int groupIndex, int shardIndex, int bitIndex) {
-            this.groupIndex = groupIndex;
-            this.shardIndex = shardIndex;
-            this.bitIndex = bitIndex;
-        }
-
-        public int getBitIndex() {
-            return bitIndex;
-        }
-
-        public String generateKeyWithPrefix(String prefix) {
-            return String.join(":", prefix, groupIndex + "", shardIndex + "");
-        }
     }
 
 }

@@ -1,16 +1,17 @@
 package com.redis.controller;
 
 
+import com.alibaba.fastjson.JSON;
+import com.redis.StockDTO;
 import com.redis.config.RedisClient;
+import jakarta.annotation.Resource;
 import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +33,7 @@ public class SkillGoodsController {
     @Autowired
     RedissonClient redissonClient;
 
+
     @Resource
     RBloomFilter<String> phoneFilter;
 
@@ -39,11 +41,24 @@ public class SkillGoodsController {
 
     @GetMapping("/testReentrantLock")
     public String testReentrantLock() throws InterruptedException {
-        RLock clientLock = redissonClient.getLock("reentrantLock");
-        clientLock.lock();
-        test();
-        Thread.sleep(5000);
-        clientLock.unlock();
+
+        RedisClient.setString("testOne","value");
+
+
+        Object testOne = RedisClient.get("testOne");
+
+        System.out.println(testOne.toString());
+
+
+        StockDTO stockDTO = new StockDTO();
+        stockDTO.setName("测试名称");
+        stockDTO.setPrice("测试价格");
+        String jsonString = JSON.toJSONString(stockDTO);
+
+        RedisClient.setString("stockDTO",jsonString);
+
+        redissonClient.getBucket("string").set("value");
+
         return "success";
     }
 

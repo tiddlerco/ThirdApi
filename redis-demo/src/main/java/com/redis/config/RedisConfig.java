@@ -1,5 +1,6 @@
 package com.redis.config;
 
+import jakarta.annotation.Resource;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
@@ -8,9 +9,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import javax.annotation.Resource;
 
 /**
  * redis 配置
@@ -29,14 +30,23 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        //redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-        //redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
+        //设置key前缀
+        redisTemplate.setKeySerializer(redisKeySerializer());
+        redisTemplate.setHashKeySerializer(redisKeySerializer());
         redisTemplate.setHashValueSerializer(new GenericToStringSerializer(String.class));
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(factory);
         return redisTemplate;
+    }
+
+    private RedisSerializer<String> redisKeySerializer() {
+        return new StringRedisSerializer() {
+            @Override
+            public byte[] serialize(String string) {
+                // 添加你的key前缀
+                return ("your_prefix:" + string).getBytes();
+            }
+        };
     }
 
     @Bean
