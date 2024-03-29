@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 股票传输对象
  * @author yulinfeng
@@ -12,8 +15,10 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class StockDTO {
+public class StockDTO implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 7801703039670841L;
     /**
      * 股票名称
      */

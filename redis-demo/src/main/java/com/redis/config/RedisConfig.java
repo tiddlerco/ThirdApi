@@ -1,5 +1,7 @@
 package com.redis.config;
 
+import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
@@ -9,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -34,17 +37,34 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(redisKeySerializer());
         redisTemplate.setHashKeySerializer(redisKeySerializer());
         redisTemplate.setHashValueSerializer(new GenericToStringSerializer(String.class));
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
+
+        /**
+         * ValueSerializer序列化两种序列化方式
+         * 方式1 使用ObjectMapper和Jackson2JsonRedisSerializer，保持在redis中的对象会带有class信息，可直接取出反序列化成对象
+         * 方式2  使用fastJson的FastJsonRedisSerializer，保持在redis中的对象是一个json字符串
+         */
+        //方式1
+        ObjectMapper om = new ObjectMapper();
+        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(om,Object.class);
+
+        //方式2
+
+//         FastJsonRedisSerializer<Object> serializer = new FastJsonRedisSerializer<>(Object.class);
+
+        redisTemplate.setValueSerializer(serializer);
+
         redisTemplate.setConnectionFactory(factory);
         return redisTemplate;
     }
 
+    //给所有的key添加一个前缀
     private RedisSerializer<String> redisKeySerializer() {
         return new StringRedisSerializer() {
             @Override
             public byte[] serialize(String string) {
                 // 添加你的key前缀
-                return ("your_prefix:" + string).getBytes();
+                return ("yuke:" + string).getBytes();
             }
         };
     }
