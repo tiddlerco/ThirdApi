@@ -44,9 +44,9 @@ public class RedisConfig {
          * 方式2  使用fastJson的FastJsonRedisSerializer，保持在redis中的对象是一个json字符串
          */
         //方式1
-        ObjectMapper om = new ObjectMapper();
-        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(om,Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(objectMapper,Object.class);
 
         //方式2
 

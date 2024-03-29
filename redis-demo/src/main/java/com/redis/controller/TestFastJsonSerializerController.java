@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
+/**
+ * redis FastJsonSerializer序列化
+ */
+
 @RestController
 public class TestFastJsonSerializerController {
 
