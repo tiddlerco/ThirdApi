@@ -1,10 +1,9 @@
 spring:
   datasource:
-    username: root
-    password: root@525
-    url: jdbc:mysql://rm-j6cuej72vt56x2i7s.mysql.rds.aliyuncs.com/kding_newlive?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&allowMultiQueries=true
-    driver-class-name: com.mysql.jdbc.Driver
-
+    username: root_king
+    password: Varian_wrynn
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc\:mysql\://127.0.0.1\:3307/content_distribution_platform?useUnicode\=true&characterEncoding\=utf-8&serverTimezone\=GMT%2B8&allowMultiQueries=true
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
